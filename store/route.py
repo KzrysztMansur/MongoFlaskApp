@@ -12,7 +12,7 @@ class Card:
 tags = ["terror", "romance", "matemáticas", "shitpost", "física", "uwu", "derecho", "comercio", "quantica", "ciencia ficción"]
 cards = [Card(None, "maths for dummies", 70, "this is a book for people who dont know maths", [2, 3, 4, 5]),
          Card(None, "php for dummies", 70, "this is a book for people who dont know php", [2, 3, 4, 5]),
-         Card(None, "web for dummies", 70, "this is a book for people who dont know deb", [2, 3, 4, 5])
+         Card(None, "web for dummies", 70, "this is a book for people who dont know web", [2, 3, 4, 5])
          ]
 
 
@@ -31,9 +31,25 @@ def create_tag():
     if request.method =='POST':
 
         tags.append(request.form['tagName'])
-        #redirect(url_for('inventory'))
+        return redirect(url_for('inventory'))
 
     return render_template('inventory.html', tags=tags)
+
+@app.route('/add_product', methods=['GET','POST'])
+def add_product():
+    if request.method =='POST':
+        name = request.form['name']
+        price = request.form['price']
+        description = request.form['description']
+
+        print(name)
+        print(price)
+        print(description)
+
+        return redirect(url_for('inventory'))
+
+    return render_template('inventory.html', tags=tags)
+
 
 
 @app.route('/costumer_view', methods=['GET', 'POST'])
