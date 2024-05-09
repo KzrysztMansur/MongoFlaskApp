@@ -9,7 +9,7 @@ class Product:
 
     @staticmethod
     def get_by_name(name):
-        return mongo.db.users.find_one({'name': name})
+        return mongoDB.db.users.find_one({'name': name})
     
     @staticmethod
     def get_by_tags(tags):
