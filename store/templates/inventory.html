@@ -14,9 +14,9 @@
         {% for tag in tags[i:i+chunk_size] %}
         <div class="col-md-{{ 12 // chunk_size }} mb-3">
             <div class="card tag-card py-0">
-                <div class="card-body">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <p class="card-title my-0">{{ tag }}</p>
                     <span aria-hidden="true">&times;</span>
-                    <p class="card-title text-center my-0">{{ tag }}</p>
                 </div>
             </div>
         </div>
@@ -31,6 +31,7 @@
         <div class="col-md-12 text-center">
             <h2>Agregar un producto</h2>
             <button class="btn btn-sm btn-outline-secondary  mb-4 px-4" type="button">+</button>
+            
         </div>
     </div>
 </div>
