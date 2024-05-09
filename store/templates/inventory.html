@@ -34,6 +34,26 @@
 
         </div>
     </div>
+
+    {% for i in range(0, cards|length, 4) %}
+    <div class="row justify-content-center">
+        {% set chunk_size = 4 if (cards[i:i+4]|length) > 0 else cards|length %}
+        {% for card in cards[i:i+chunk_size] %}
+        <div class="col-md-{{ 12 // chunk_size }} mb-3">
+            <div class="card tag-card py-0">
+                <div class="card-body">
+                    <img src="{url('card.img')}" alt="image not found">
+                    <p class="card-title my-0 mx-2">{{ card.name }}</p>
+                    <p class="card-text">{{ card.price }}</p>
+                    <p class="card-text">{{ card.description }}</p>
+                    
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
 </div>
 
 <!--MODALS-->
