@@ -1,7 +1,20 @@
 from flask import redirect, url_for, render_template, request
 from . import app
 
+class Card:
+    def __init__(self, img, name, price, description, tags_id):
+        self.img = img
+        self.name = name
+        self.price = price
+        self.description = description
+        self.tags_id = tags_id
+
 tags = ["terror", "romance", "matemáticas", "shitpost", "física", "uwu", "derecho", "comercio", "quantica", "ciencia ficción"]
+cards = [Card(None, "maths for dummies", 70, "this is a book for people who dont know maths", [2, 3, 4, 5]),
+         Card(None, "php for dummies", 70, "this is a book for people who dont know php", [2, 3, 4, 5]),
+         Card(None, "web for dummies", 70, "this is a book for people who dont know deb", [2, 3, 4, 5])
+         ]
+
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/inventory', methods=['GET','POST'])
@@ -11,7 +24,7 @@ def inventory():
         # Handle POST Request here
         return render_template('inventory.html')        
 
-    return render_template('inventory.html', tags=tags)         
+    return render_template('inventory.html', tags=tags, cards=cards)         
 
 @app.route('/create_tag', methods=['GET','POST'])
 def create_tag():
