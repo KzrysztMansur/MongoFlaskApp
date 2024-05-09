@@ -9,13 +9,22 @@
 </head>
 <body>
     <nav class="navbar bg-body-tertiary">
-        <form class="container-fluid justify-content-start">
-            <button class="btn btn-sm btn-outline-secondary me-2" type="button">Inventory</button>
-            <button class="btn btn-sm btn-outline-secondary" type="button">Costumer view</button>
-        </form>
+        <div class="container-fluid">
+            <ul class="navbar-nav ms-auto nav-item" style="display: flex; flex-direction: row;">     
+                <!-- Button to navigate to the Inventory page -->
+                <li class="nav-item d-inline mx-3">
+                    <a class="nav-link" href="{{ url_for('inventory') }}">Inventory</a>
+                </li>
+                <!-- Button to navigate to the Customer view page -->
+                <li class="nav-item d-inline mx-3">
+                    <a class="nav-link" href="{{ url_for('costumer_view') }}">Customer view</a>
+                </li>
+            </ul>
+        </div>
     </nav>
     {% block content %}
     {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
