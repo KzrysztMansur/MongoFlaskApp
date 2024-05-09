@@ -8,6 +8,6 @@ app.config['MONGO_URI'] = 'mongodb://localhost:27017/your_database'
 
 mongoDB = PyMongo(app)
 
-from . import mongo_models
+from .route import *
+                
 
-from .views import *
