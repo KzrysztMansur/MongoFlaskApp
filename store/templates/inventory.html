@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-md-12 text-center">
             <h2>Agregar un producto</h2>
-            <button class="btn btn-sm btn-outline-secondary mb-4 px-4" type="button">+</button>
+            <button class="btn btn-sm btn-outline-secondary mb-4 px-4" type="button" data-bs-toggle="modal" data-bs-target="#addProduct">+</button>
 
         </div>
     </div>
@@ -42,7 +42,7 @@
         <div class="col-md-{{ 12 // chunk_size }} mb-3">
             <div class="card tag-card py-0">
                 <div class="card-body">
-                    <img src="{url('card.img')}" alt="image not found">
+                    <img class="product img" src="{url('card.img')}" alt="image not found">
                     <p class="card-title my-0 mx-2">{{ card.name }}</p>
                     <p class="card-text">{{ card.price }}</p>
                     <p class="card-text">{{ card.description }}</p>
@@ -79,4 +79,40 @@
         </div>
     </div>
 </div>
+
+<!--modal para agregar un producto-->
+<div class="modal fade" id="addProduct" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="/add_product">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Agrega un producto</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="name">Nombre del producto</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Precio del producto</label>
+                        <input type="number" class="form-control" id="price" name="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Agrega una descipción</label>
+                        <input type="text" class="form-control" id="description" name="description" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tags"></label>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Agregar producto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
