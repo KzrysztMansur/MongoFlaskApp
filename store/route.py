@@ -1,5 +1,14 @@
 from flask import redirect, url_for, render_template, request
+from werkzeug.utils import secure_filename
+import os
 from . import app
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}  # Define the allowed file extensions
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 
 class Card:
     def __init__(self, img, name, price, description, tags_id):
@@ -41,6 +50,7 @@ def add_product():
         name = request.form['name']
         price = request.form['price']
         description = request.form['description']
+        file = request.files['productImage']
 
         print(name)
         print(price)
