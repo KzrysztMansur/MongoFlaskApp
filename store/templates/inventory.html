@@ -45,8 +45,12 @@
                     <img class="product img" src="{url('card.img')}" alt="image not found">
                     <h5 class="card-title">{{ card.name }}</h5>
                     <h6 class="card-text">${{ card.price }}</h6>
-                    <p class="card-text">{{ card.description }}</p>
-                    
+                    <p class="card-text pb-3">{{ card.description }}</p>
+                    {% for tag in card.tags %}
+                    <div class="card tag-card p-1 m-4 text-center">
+                        {{tag}} 
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

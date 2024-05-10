@@ -11,19 +11,19 @@ def allowed_file(filename):
 
 
 class Product:
-    def __init__(self, img, name, price, description, tags_id):
+    def __init__(self, img, name, price, description, tags):
         self.img = img
         self.name = name
         self.price = price
         self.description = description
-        self.tags_id = tags_id
+        self.tags = tags
 
 
 tags = ["terror", "romance", "matemáticas", "shitpost", "física", "uwu", "derecho", "comercio", "quantica",
         "ciencia ficción"]
-cards = [Product(None, "maths for dummies", 70, "this is a book for people who dont know maths", [2, 3, 4, 5]),
-         Product(None, "php for dummies", 70, "this is a book for people who dont know php", [2, 3, 4, 5]),
-         Product(None, "web for dummies", 70, "this is a book for people who dont know web", [2, 3, 4, 5])
+cards = [Product(None, "maths for dummies", 70, "this is a book for people who dont know maths", [tags[2], tags[3], tags[4], tags[5]]),
+         Product(None, "php for dummies", 70, "this is a book for people who dont know php", [tags[2], tags[3], tags[4], tags[5]]),
+         Product(None, "web for dummies", 70, "this is a book for people who dont know web", [tags[2], tags[3], tags[4], tags[5]])
          ]
 
 
