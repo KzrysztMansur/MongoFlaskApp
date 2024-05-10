@@ -47,14 +47,17 @@ def create_tag():
 @app.route('/add_product', methods=['GET','POST'])
 def add_product():
     if request.method =='POST':
+        #file = request.files['productImage']
         name = request.form['name']
         price = request.form['price']
         description = request.form['description']
-        file = request.files['productImage']
+        selected_tags = request.form.getlist('tags[]')
 
         print(name)
         print(price)
         print(description)
+        print(selected_tags)
+
 
         return redirect(url_for('inventory'))
 
