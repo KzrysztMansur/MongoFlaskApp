@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <form method="POST" action="/process_selected_tags">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <h2>Selecciona las etiquetas que te interesan</h2>
+                </div>
+            </div>
+            {% for i in range(0, tags|length, 5) %}
+            <div class="row justify-content-center">
+                {% set chunk_size = 5 if (tags[i:i+5]|length) > 0 else tags|length %}
+                {% for tag in tags[i:i+chunk_size] %}
+                <div class="col-md-{{ 12 // chunk_size }} mb-3">
+                    <div class="card tag-card py-0">
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <input class="m-2" type="checkbox" name="selectedTags" value="{{ tag.name }}"> 
+                            {{ tag.name }}               
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <button type="submit" class="btn btn-dark mb-4">Buscar</button>
+            </div>
+        </div>
+        
+    </form>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h2>Productos</h2>
+            </div>
+        </div>
+
+        {% for i in range(0, cards|length, 4) %}
+        <div class="row justify-content-center">
+            {% set chunk_size = 4 if (cards[i:i+4]|length) > 0 else cards|length %}
+            {% for card in cards[i:i+chunk_size] %}
+            <div class="col-md-{{ 12 // chunk_size }} mb-3">
+                <div class="card tag-card py-0">
+                    <div class="card-body">
+                        <div class="image-container">
+                            <img src="{{ url_for('static', filename='img_urls/' + card.img) }}" alt="Product Image">
+                        </div>
+                        <h5 class="card-title">{{ card.name }}</h5>
+                        <h6 class="card-text">${{ card.price }}</h6>
+                        <p class="card-text">{{ card.description }}</p>
+                        
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+    </div>
+{% endblock %}
