@@ -1,3 +1,23 @@
 img {
-    height: 30px;
+    height: 200px;
+    width: 200px;
+}
+.card img {
+    display: block; /* Make the image a block-level element */
+    margin: 0 auto; /* Center the image horizontally */
+}
+
+.card .card-body {
+    padding: 10px; /* Adjust padding as needed */
+}
+.card .card-text {
+    text-align: justify; /* Justify the text */
+    margin-bottom: 10px; /* Adjust margin as needed */
+}
+.card .tag-card {
+    display: inline-block; /* Make tags inline-block to reduce space */
+    margin:  5px; /* Adjust margin as needed */
+    padding: 5px 10px; /* Adjust padding as needed */
+    background-color: #f0f0f0; /* Add background color */
+    border-radius: 5px; /* Add border radius */
 }
