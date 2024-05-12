@@ -12,5 +12,3 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 mongoDB = PyMongo(app)
 
 from .route import *
-                
-
