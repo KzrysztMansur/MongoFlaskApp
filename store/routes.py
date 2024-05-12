@@ -43,6 +43,7 @@ cards = [Product("MongoFlaskApp\store\static\img_urls\pink donut.jpg", "maths fo
          Product("MongoFlaskApp\store\static\img_urls\pink donut.jpg", "web for dummies", 70, "this is a book for people who dont know web", [tags[2], tags[3], tags[4], tags[5]])
          ]
 
+
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(os.path.join(app.root_path, 'static'), filename)
@@ -99,25 +100,30 @@ def delete_tag(tag_index):
 
 @app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
-    if request.method =='POST':
+    if request.method == 'POST':
         file = request.files['product_img']
+        upload_folder = app.config['UPLOAD_FOLDER']
+
+        # Ensure the upload folder exists
+        if not os.path.exists(upload_folder):
+            os.makedirs(upload_folder)
 
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
+            filepath = os.path.join(upload_folder, filename)
+            file.save(filepath)
+
             name = request.form['name']
             price = request.form['price']
             description = request.form['description']
             selected_tags = request.form.getlist('tags[]')
 
-
             print(name)
             print(price)
             print(description)
-            print(selected_tags)
+            for tag in selected_tags:
+                print(tag)
             print('File saved as:', filename)
-
 
         return redirect(url_for('inventory'))
 

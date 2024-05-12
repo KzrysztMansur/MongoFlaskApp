@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'MongoFlaskApp\store\static\img_urls'
+UPLOAD_FOLDER = 'store\static\img_urls'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
