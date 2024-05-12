@@ -30,14 +30,12 @@
         $(document).ready(function() {
             // Manejar clic en el botón de enviar
             $('#submitBtn').click(function() {
-                // Crear un array para almacenar los valores seleccionados
+
                 var selectedTags = [];
-                // Iterar sobre cada casilla de verificación
                 $('input[name="tags[]"]:checked').each(function() {
-                    // Agregar el valor de la casilla de verificación seleccionada al array
+  
                     selectedTags.push($(this).val());
                 });
-                // Asignar los valores seleccionados al campo de tags en el formulario
                 $('input[name="tags"]').val(selectedTags.join(','));
                 // Enviar el formulario
                 $('form').submit();
