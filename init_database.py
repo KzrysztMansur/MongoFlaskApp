@@ -16,6 +16,9 @@ def main():
     tags_collection = db['tags']
     products_collection = db['products']
 
+    # Crear un índice en el campo 'name' de la colección 'tags'
+    tags_collection.create_index('name', unique=True)
+
     # Comprobar si las colecciones están vacías
     if tags_collection.count_documents({}) == 0 and products_collection.count_documents({}) == 0:
         # Agregar tags de ejemplo
