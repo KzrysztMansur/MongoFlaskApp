@@ -122,6 +122,17 @@ def add_product():
     return render_template('inventory.html', tags=tags)
 
 
+@app.route('/delete_product/<string:product_id>', methods=['POST'])
+def delete_product(product_id):
+    
+    if request.method == 'POST':
+        
+        product_manager.delete_product(product_id)
+
+    return redirect(url_for('inventory'))
+
+
+
 # DESDE AQUÍ SE EMPIEZA A VER LA VISTA DEL COMPRADOR
 @app.route('/customer_view', methods=['GET', 'POST'])
 def customer_view():
