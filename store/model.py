@@ -11,23 +11,22 @@ class TagManager:
         """
         self.collection = db['tags']
 
-    def add_tag(self, name: str) -> ObjectId:
+    def add_tag(self, name: str):
         """
         Add a new tag to the database.
 
         :param name: The name of the tag to add
-        :return: The ID of the created tag
         """
-        return self.collection.insert_one({'name': name}).inserted_id
+        self.collection.insert_one({'name': name})
 
-    def get_tag_by_id(self, tag_id: ObjectId) -> Dict[str, Any]:
+    def get_tag_by_id(self, tag_id: str) -> Dict[str, Any]:
         """
         Retrieve a tag by its ID.
 
         :param tag_id: The ID of the tag to retrieve
         :return: The retrieved tag document
         """
-        return self.collection.find_one({'_id': tag_id})
+        return self.collection.find_one({'_id': ObjectId(tag_id)})
 
     def get_all_tags(self) -> List[Dict[str, Any]]:
         """
@@ -37,7 +36,7 @@ class TagManager:
         """
         return list(self.collection.find({}))
 
-    def update_tag(self, tag_id: ObjectId, new_name: str) -> Optional[bool]:
+    def update_tag(self, tag_id: str, new_name: str) -> Optional[bool]:
         """
         Update the name of an existing tag.
 
@@ -45,16 +44,16 @@ class TagManager:
         :param new_name: The new name for the tag
         :return: True if the update was successful, None otherwise
         """
-        return self.collection.update_one({'_id': tag_id}, {'$set': {'name': new_name}}).modified_count
+        return self.collection.update_one({'_id': ObjectId(tag_id)}, {'$set': {'name': new_name}}).modified_count
 
-    def delete_tag(self, tag_id: ObjectId) -> Optional[bool]:
+    def delete_tag(self, tag_id: str) -> Optional[bool]:
         """
         Delete a tag by its ID.
 
         :param tag_id: The ID of the tag to delete
         :return: True if the deletion was successful, None otherwise
         """
-        return self.collection.delete_one({'_id': tag_id}).deleted_count
+        return self.collection.delete_one({'_id': ObjectId(tag_id)}).deleted_count
 
 
 class ProductManager:
@@ -67,7 +66,7 @@ class ProductManager:
         self.collection = db['products']
 
     def add_product(self, name: str, price: float, description: str, image_url: str,
-                    tags: Optional[List[ObjectId]] = None) -> ObjectId:
+                    tags: Optional[List[str]] = None):
         """
         Add a new product to the database.
 
@@ -78,22 +77,22 @@ class ProductManager:
         :param tags: Optional; List of tag IDs associated with the product. Can be an empty list.
         :return: The ID of the created product
         """
-        return self.collection.insert_one({
+        self.collection.insert_one({
             'name': name,
             'price': price,
             'description': description,
             'image_url': image_url,
-            'tags': tags if tags else []
-        }).inserted_id
+            'tags': [ObjectId(tag) for tag in tags] if tags else []
+        })
 
-    def get_product_by_id(self, product_id: ObjectId) -> Dict[str, Any]:
+    def get_product_by_id(self, product_id: str) -> Dict[str, Any]:
         """
         Retrieve a product by its ID.
 
         :param product_id: The ID of the product to retrieve
         :return: The retrieved product document
         """
-        return self.collection.find_one({'_id': product_id})
+        return self.collection.find_one({'_id': ObjectId(product_id)})
 
     def get_all_products(self) -> List[Dict[str, Any]]:
         """
@@ -103,9 +102,9 @@ class ProductManager:
         """
         return list(self.collection.find({}))
 
-    def update_product(self, product_id: ObjectId, name: Optional[str] = None, price: Optional[float] = None,
+    def update_product(self, product_id: str, name: Optional[str] = None, price: Optional[float] = None,
                        description: Optional[str] = None, image_url: Optional[str] = None,
-                       tags: Optional[List[ObjectId]] = None) -> Optional[bool]:
+                       tags: Optional[List[str]] = None) -> Optional[bool]:
         """
         Update the information of an existing product.
 
@@ -118,27 +117,29 @@ class ProductManager:
         :return: True if the update was successful, None otherwise
         """
         update_data = {k: v for k, v in locals().items() if v is not None and k != 'product_id'}
-        return self.collection.update_one({'_id': product_id}, {'$set': update_data}).modified_count
+        if 'tags' in update_data:
+            update_data['tags'] = [ObjectId(tag) for tag in tags]
+        return self.collection.update_one({'_id': ObjectId(product_id)}, {'$set': update_data}).modified_count
 
-    def delete_product(self, product_id: ObjectId) -> Optional[bool]:
+    def delete_product(self, product_id: str) -> Optional[bool]:
         """
         Delete a product by its ID.
 
         :param product_id: The ID of the product to delete
         :return: True if the deletion was successful, None otherwise
         """
-        return self.collection.delete_one({'_id': product_id}).deleted_count
+        return self.collection.delete_one({'_id': ObjectId(product_id)}).deleted_count
 
-    def find_products_by_tag(self, tag_id: ObjectId) -> List[Dict[str, Any]]:
+    def find_products_by_tag(self, tag_id: str) -> List[Dict[str, Any]]:
         """
         Find all products that contain a specific tag.
 
         :param tag_id: The ID of the tag to search by
         :return: A list of products that contain the specified tag
         """
-        return list(self.collection.find({'tags': tag_id}))
+        return list(self.collection.find({'tags': ObjectId(tag_id)}))
 
-    def find_products_by_tags(self, tags: List[ObjectId], match_all: bool = False) -> List[Dict[str, Any]]:
+    def find_products_by_tags(self, tags: List[str], match_all: bool = False) -> List[Dict[str, Any]]:
         """
         Find products based on a list of tags.
 
@@ -146,6 +147,7 @@ class ProductManager:
         :param match_all: True to require all tags in each product, False to require at least one tag
         :return: A list of products that match the tag criteria
         """
+        tags = [ObjectId(tag) for tag in tags]
         if match_all:
             query = {'tags': {'$all': tags}}
         else:
