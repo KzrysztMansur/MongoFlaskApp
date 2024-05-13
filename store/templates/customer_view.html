@@ -15,7 +15,7 @@
                 <div class="col-md-{{ 12 // chunk_size }} mb-3">
                     <div class="card tag-card py-0">
                         <div class="card-body d-flex align-items-center justify-content-center">
-                            <input class="m-2" type="checkbox" name="selectedTags" value="{{ tag.name }}"> 
+                            <input class="m-2" type="checkbox" name="selectedTags" value="{{ tag._id }}"> 
                             {{ tag.name }}               
                         </div>
                     </div>
@@ -42,16 +42,16 @@
         {% for i in range(0, products|length, 4) %}
         <div class="row justify-content-center">
             {% set chunk_size = 4 if (products[i:i+4]|length) > 0 else products|length %}
-            {% for card in products[i:i+chunk_size] %}
+            {% for product in products[i:i+chunk_size] %}
             <div class="col-md-{{ 12 // chunk_size }} mb-3">
                 <div class="card tag-card py-0">
                     <div class="card-body">
                         <div class="image-container">
-                            <img src="{{ url_for('static', filename='img_urls/' + card.image_url) }}" alt="Product Image">
+                            <img src="{{ url_for('static', filename='img_urls/' + product.image_url) }}" alt="Product Image">
                         </div>
-                        <h5 class="card-title">{{ card.name }}</h5>
-                        <h6 class="card-text">${{ card.price }}</h6>
-                        <p class="card-text">{{ card.description }}</p>
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <h6 class="card-text">${{ product.price }}</h6>
+                        <p class="card-text">{{ product.description }}</p>
                         
                     </div>
                 </div>

@@ -14,24 +14,24 @@
         {% for tag in tags[i:i+chunk_size] %}
         <div class="col-md-{{ 12 // chunk_size }} mb-3">
             <div class="card tag-card py-0 ">
-                <button class="btn btn-sm btn-outline-dark d-flex align-items-center justify-content-center m-0 px-1" type="button" data-bs-toggle="modal" data-bs-target="#updateTagModal{{ tag.id }}">
+                <button class="btn btn-sm btn-outline-dark d-flex align-items-center justify-content-center m-0 px-1" type="button" data-bs-toggle="modal" data-bs-target="#updateTagModal{{ tag._id }}">
                     <div class="card-body d-flex align-items-center justify-content-center">
                         <p class="card-title my-0 mx-2">{{ tag.name }}</p> 
                     </div>
                 </button>
-                <button class="btn btn-sm btn-outline-dark d-flex align-items-center justify-content-center m-0 px-1" type="button" data-bs-toggle="modal" data-bs-target="#deleteTagModal{{ tag.id }}">
+                <button class="btn btn-sm btn-outline-dark d-flex align-items-center justify-content-center m-0 px-1" type="button" data-bs-toggle="modal" data-bs-target="#deleteTagModal{{ tag._id }}">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
         </div>
 
         <!--modal para la edición de un tag-->
-        <div class="modal fade" id="updateTagModal{{ tag.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateTagModalLabel{{ tag.id }}" aria-hidden="true">
+        <div class="modal fade" id="updateTagModal{{ tag._id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="updateTagModalLabel{{ tag._id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="POST" action="/update_tag/{{ tag.id }}">
+                    <form method="POST" action="/update_tag/{{ tag._id }}">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="updateTagModalLabel{{ tag.id }}">Actualiza el nombre</h5>
+                            <h5 class="modal-title" id="updateTagModalLabel{{ tag._id }}">Actualiza el nombre</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -49,18 +49,18 @@
         </div>
 
         <!--modal para la eliminación de un tag-->
-        <div class="modal fade" id="deleteTagModal{{ tag.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTagModalLabel{{ tag.id }}" aria-hidden="true">
+        <div class="modal fade" id="deleteTagModal{{ tag._id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteTagModalLabel{{ tag._id }}" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="POST" action="/delete_tag/{{ tag.id }}">
+                    <form method="POST" action="/delete_tag/{{ tag._id }}">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="deleteTagModalLabel{{ tag.id }}">Seguro que quieres eliminar la etiqueta {{ tag.name }}</h5>
+                            <h5 class="modal-title" id="deleteTagModalLabel{{ tag._id }}">Seguro que quieres eliminar la etiqueta {{ tag.name }}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="form-group">
-                                <input type="hidden" name="tag_id" value="{{ tag.id }}">
-                                <label class="form-check-label" for="tag_{{ tag.id }}">¿Estás seguro que deseas eliminar la etiqueta {{ tag.name }}?</label>
+                                <input type="hidden" name="tag_id" value="{{ tag._id }}">
+                                <label class="form-check-label" for="tag_{{ tag._id }}">¿Estás seguro que deseas eliminar la etiqueta {{ tag.name }}?</label>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -101,7 +101,7 @@
                     <p class="card-text pb-3">{{ card.description }}</p>
                     {% for tag_id in card.tags %}
                         {% if tag_id %}
-                            {% set tag = tag_manager.get_tag_by_id(ObjectId(str(tag_id))) %}
+                            {% set tag = tag_manager.get_tag_by_id(str(tag_id)) %}
                             {% if tag %}
                                 <div class="card tag-card px-1 m-1 text-center">
                                     {{ tag.name }}
@@ -173,7 +173,7 @@
                         <label>Selecciona etiquetas que describan tu producto</label><br>
                         {% for tag in tags %}
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="tag_{{ loop.index }}" name="tags[]" value="{{ tag }}">
+                            <input class="form-check-input" type="checkbox" id="tag_{{ loop.index }}" name="tags[]" value="{{ tag._id }}">
                             <label class="form-check-label" for="tag_{{ loop.index }}">{{ tag.name }}</label>
                         </div>
                         {% endfor %}

@@ -1,5 +1,5 @@
 from . import app, mongo_client
-from .model import TagManager, ProductManager, ObjectId
+from .model import TagManager, ProductManager
 from flask import redirect, url_for, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -48,9 +48,8 @@ def inventory():
     if request.method == 'POST':
         # Handle POST Request here
         return render_template('inventory.html')
-    print(products[1])
 
-    return render_template('inventory.html', tags=tags, products=products, tag_manager=tag_manager, ObjectId=ObjectId, str=str)
+    return render_template('inventory.html', tags=tags, products=products, tag_manager=tag_manager, str=str)
 
 
 @app.route('/create_tag', methods=['GET', 'POST'])
@@ -72,23 +71,24 @@ def update_tag(tag_id):
         if new_tag_name:
             # Update the tag in the database
             # Assuming you have a TagManager class with a method update_tag_name
-            tag_manager.update_tag_name(tag_id, new_tag_name)
+            tag_manager.update_tag(tag_id, new_tag_name)
         return redirect(url_for('inventory'))
 
     return render_template('inventory.html', tags=tags, products=products)
 
 
-@app.route('/delete_tag/<int:tag_index>', methods=['GET', 'POST'])
+@app.route('/delete_tag/<string:tag_index>', methods=['GET', 'POST'])
 def delete_tag(tag_index):
     if request.method == 'POST':
-        tag_id = int(request.form.get('tag_id'))
+        tag_id = request.form.get('tag_id')
         if tag_id is not None:
             try:
-                # If you're using a list to store tags
-                tags.pop(tag_index)
-                # If you're using a database, you would perform a deletion operation here
-            except IndexError:
+                # se borra de la base de datos
+                tag_manager.delete_tag(tag_id)
+                # no se pudo borrar
+            except Exception:
                 # Handle the case where the index is out of range
+                print("unknown exception")
                 pass
 
             return redirect(url_for('inventory'))
@@ -102,26 +102,20 @@ def add_product():
         file = request.files['product_img']
         upload_folder = app.config['UPLOAD_FOLDER']
 
-        # Ensure the upload folder exists
-        if not os.path.exists(upload_folder):
-            os.makedirs(upload_folder)
-
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             filepath = os.path.join(upload_folder, filename)
             file.save(filepath)
 
             name = request.form['name']
-            price = request.form['price']
+            price = float(request.form['price'])
             description = request.form['description']
             selected_tags = request.form.getlist('tags[]')
 
-            print(name)
-            print(price)
-            print(description)
-            for tag in selected_tags:
-                print(tag)
-            print('File saved as:', filename)
+            selected_tags = [str(tag) for tag in selected_tags]
+  
+
+            product_manager.add_product(name, price, description, image_url=filename, tags=selected_tags)
 
         return redirect(url_for('inventory'))
 
@@ -131,21 +125,22 @@ def add_product():
 # DESDE AQUÍ SE EMPIEZA A VER LA VISTA DEL COMPRADOR
 @app.route('/customer_view', methods=['GET', 'POST'])
 def customer_view():
+    
     if request.method == 'POST':
-        # aquí lo logica para que solamente regrese solo los objetos de los tags seleccionados
-        # products = []
 
-        return render_template('customer_view.html', tags=tags, products=products)
 
-    # aquí es para que regrese los objetos sin ningun tipo de filtro
-    # products = [] 
+        return redirect(url_for('process_selected_tags'))
 
-    return render_template('customer_view.html', tags=tags, products=products)
+    selected_products = products
+    return render_template('customer_view.html', tags=tags, products=selected_products)
 
 @app.route('/process_selected_tags', methods=['POST'])
 def process_selected_tags():
     selected_tags = request.form.getlist('selectedTags')
-    
-    print('Selected tags received:', selected_tags)
-    return redirect(url_for('customer_view'))
-
+    if not selected_tags:
+        # If no tags selected, return all products
+        return redirect(url_for('customer_view'))
+    else:
+        # Find products by selected tags
+        selected_products = product_manager.find_products_by_tags(selected_tags)
+        return render_template('customer_view.html', tags=tags, products=selected_products)
