@@ -1,4 +1,5 @@
-from . import app
+from . import app, mongo_client
+from .model import TagManager, ProductManager, ObjectId
 from flask import redirect, url_for, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -24,25 +25,13 @@ class Tag:
         self.id = id
         self.name = name
         
+tag_manager = TagManager(mongo_client['book_store'])
 
-tags = [
-    Tag(0, "terror"),
-    Tag(1, "romance"),
-    Tag(2, "matemáticas"),
-    Tag(3, "shitpost"),
-    Tag(4, "física"),
-    Tag(5, "uwu"),
-    Tag(6, "derecho"),
-    Tag(7, "comercio"),
-    Tag(8, "quantica"),
-    Tag(9, "ciencia ficción")
-]
+tags = tag_manager.get_all_tags()
+print(tags)
 
-cards = [Product("MongoFlaskApp\store\static\img_urls\pink donut.jpg", "maths for dummies", 70, "this is a book for people who dont know maths", [tags[2], tags[3], tags[4], tags[5]]),
-         Product("MongoFlaskApp\store\static\img_urls\pink donut.jpg", "php for dummies", 70, "this is a book for people who dont know php", [tags[2], tags[3], tags[4], tags[5]]),
-         Product("MongoFlaskApp\store\static\img_urls\pink donut.jpg", "web for dummies", 70, "this is a book for people who dont know web", [tags[2], tags[3], tags[4], tags[5]])
-         ]
-
+product_manager = ProductManager(mongo_client['book_store'])
+products = product_manager.get_all_products()
 
 @app.route('/static/<path:filename>')
 def serve_static(filename):
@@ -51,33 +40,42 @@ def serve_static(filename):
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/inventory', methods=['GET', 'POST'])
 def inventory():
+    tag_manager = TagManager(mongo_client['book_store'])
+    tags = tag_manager.get_all_tags()
+
+    product_manager = ProductManager(mongo_client['book_store'])
+    products = product_manager.get_all_products()
     if request.method == 'POST':
         # Handle POST Request here
         return render_template('inventory.html')
+    print(products[1])
 
-    return render_template('inventory.html', tags=tags, cards=cards)
+    return render_template('inventory.html', tags=tags, products=products, tag_manager=tag_manager, ObjectId=ObjectId, str=str)
 
 
 @app.route('/create_tag', methods=['GET', 'POST'])
 def create_tag():
     if request.method == 'POST':
-        count = len(tags)
-        tags.append(Tag(count, request.form['tagName']))
+        
+        #count = len(tags)
+        #tags.append(Tag(count, request.form['tagName']))
+        tag_manager.add_tag(request.form['tagName'].capitalize())
         return redirect(url_for('inventory'))
 
     return render_template('inventory.html', tags=tags)
 
 
-@app.route('/update_tag/<int:tag_index>', methods=['GET', 'POST'])
-def update_tag(tag_index):
+@app.route('/update_tag/<string:tag_id>', methods=['GET', 'POST'])
+def update_tag(tag_id):
     if request.method == 'POST':
         new_tag_name = request.form.get('newTagName')
         if new_tag_name:
-            # Update the name attribute of the Tag instance
-            tags[tag_index].name = new_tag_name
+            # Update the tag in the database
+            # Assuming you have a TagManager class with a method update_tag_name
+            tag_manager.update_tag_name(tag_id, new_tag_name)
         return redirect(url_for('inventory'))
 
-    return render_template('inventory.html', tags=tags, cards=cards)
+    return render_template('inventory.html', tags=tags, products=products)
 
 
 @app.route('/delete_tag/<int:tag_index>', methods=['GET', 'POST'])
@@ -95,7 +93,7 @@ def delete_tag(tag_index):
 
             return redirect(url_for('inventory'))
 
-    return render_template('inventory.html', tags=tags, cards=cards)
+    return render_template('inventory.html', tags=tags, products=products)
 
 
 @app.route('/add_product', methods=['GET', 'POST'])
@@ -137,12 +135,12 @@ def customer_view():
         # aquí lo logica para que solamente regrese solo los objetos de los tags seleccionados
         # products = []
 
-        return render_template('customer_view.html', tags=tags, cards=cards)
+        return render_template('customer_view.html', tags=tags, products=products)
 
     # aquí es para que regrese los objetos sin ningun tipo de filtro
     # products = [] 
 
-    return render_template('customer_view.html', tags=tags, cards=cards)
+    return render_template('customer_view.html', tags=tags, products=products)
 
 @app.route('/process_selected_tags', methods=['POST'])
 def process_selected_tags():

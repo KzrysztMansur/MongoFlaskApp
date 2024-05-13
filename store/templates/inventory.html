@@ -86,24 +86,28 @@
         </div>
     </div>
 
-    {% for i in range(0, cards|length, 4) %}
+    {% for i in range(0, products|length, 4) %}
     <div class="row justify-content-center">
-        {% set chunk_size = 4 if (cards[i:i+4]|length) > 0 else cards|length %}
-        {% for card in cards[i:i+chunk_size] %}
+        {% set chunk_size = 4 if (products[i:i+4]|length) > 0 else products|length %}
+        {% for card in products[i:i+chunk_size] %}
         <div class="col-md-{{ 12 // chunk_size }} mb-3">
             <div class="card tag-card py-0">
                 <div class="card-body">
                     <div class="image-container">
-                        <img src="{{ url_for('static', filename='img_urls/' + card.img) }}" alt="Product Image">
+                        <img src="{{ url_for('static', filename='img_urls/' + card.image_url) }}" alt="Product Image">
                     </div>
                     <h5 class="card-title">{{ card.name }}</h5>
                     <h6 class="card-text">${{ card.price }}</h6>
                     <p class="card-text pb-3">{{ card.description }}</p>
-                    {% for tag in card.tags %}
-                    <div class="card tag-card px-1 m-1 text-center">
-                        {{tag.name}} 
-                        
-                    </div>
+                    {% for tag_id in card.tags %}
+                        {% if tag_id %}
+                            {% set tag = tag_manager.get_tag_by_id(ObjectId(str(tag_id))) %}
+                            {% if tag %}
+                                <div class="card tag-card px-1 m-1 text-center">
+                                    {{ tag.name }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
