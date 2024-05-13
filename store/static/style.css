@@ -1,6 +1,7 @@
 img {
-    height: 200px;
+    height: 275px;
     width: 200px;
+    padding-bottom: 10px;
 }
 .card img {
     display: block; /* Make the image a block-level element */
